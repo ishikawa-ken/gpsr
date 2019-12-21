@@ -6,6 +6,7 @@ import rospy
 from gcp_speech_recognition.srv import SpeechRecog
 from gcp_texttospeech.srv import TTS
 from gpsr.srv import ActionPlan
+from gpsr.srv import ActionPlanResponse
 
 import lp_gpsr
 
@@ -15,22 +16,27 @@ lp = lp_gpsr.GPSR_data()
 
 def speak(sentence):
     tts_pub(sentence)
+    return
 
 def speech_recog():
     return stt_pub()
 
 def control(_dammy):
-    plan = ActionPlan()
+    plan = ActionPlanResponse()
     tmp_array = []
     recog_result = speech_recog()
     print(recog_result)
     lp_result = lp.FixSentence(recog_result.result)
+
     if lp_result == 'ERROR':
         rospy.loginfo('WARNING: rocognition result is too bad')
-        speak("one more time please")
+        # speak("one more time please")
+        plan.result = False
 
     else:
         rospy.loginfo('Succeced speech recognition')
+        speak(lp_result)
+        plan.result = True
         tmp_array = lp.MakeAction()
         tmp_action = []
         tmp_data = []
@@ -54,10 +60,9 @@ def control(_dammy):
         plan.action = tmp_action
         plan.data = tmp_data
 
-        print(plan.action)
-        print(plan.data)
-
-        return plan
+    print(plan.action)
+    print(plan.data)
+    return plan
 
 
 def main():
