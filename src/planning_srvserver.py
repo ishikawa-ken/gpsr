@@ -5,7 +5,8 @@ import roslib
 import rospy
 from gcp_speech_recognition.srv import SpeechRecog
 from gcp_texttospeech.srv import TTS
-from gpsr.srv import ActionPlan
+from gpsr.srv import ActionPlan, ActionPlanResponse
+
 
 import lp_gpsr
 
@@ -20,7 +21,7 @@ def speech_recog():
     return stt_pub()
 
 def control(_dammy):
-    plan = ActionPlan()
+    plan = ActionPlanResponse()
     tmp_array = []
     recog_result = speech_recog()
     print(recog_result)
