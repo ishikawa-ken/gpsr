@@ -13,7 +13,7 @@ import fuzzy
 import subprocess
 
 
-class GPSR_data(object):
+class DataLoader(object):
     def __init__(self):
         self._GetNamesData_()
 
@@ -25,8 +25,8 @@ class GPSR_data(object):
         # [end]
 
         self.stack = []
-        self.vbgo, self.vbtake, self.vbfind, self.vbspeak, self.vbdeliver, self.vbplace\
-        = "go", "grasp", "search", "speak", "give", "place"
+        self.vbgo, self.vbtake, self.vbfind, self.vbspeak, self.vbdeliver, self.vbplace, self.vbapproach\
+        = "go", "grasp", "search", "speak", "give", "place", "approach"
 
     # xmlからオブジェクトとか部屋の名前を取得する
     # イニシャライザの中で呼び出される
@@ -66,7 +66,17 @@ class GPSR_data(object):
         #for ges in Ges_root:
             #self.GestureData_word_list_nb.append(ges.get("name"))
 
+    def __del__(self):
+        pass
 
+
+class GPSR_data(DataLoader):
+    def __i
+    nit__(self):
+        pass
+
+    def __del__(self):
+        pass
     # オブジェクトとか部屋の名前をまとめる
     # ex) apple -> {object}, bed -> {location}
     def ChangeNames(self, sentence):
@@ -274,26 +284,26 @@ class GPSR_data(object):
             self.answer.append("none")
 
         action = {
-            self.vbspeak + " {answer} to {name} at {location}"                                                                          : [[self.vbgo, self.GetRoomName(self.location[0]), "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
+            self.vbspeak + " {answer} to {name} at {location}"                                                                          : [[self.vbgo, self.location[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
             self.vbspeak + " me name of person in {room}"                                                                               : [[self.vbgo, self.room[0], "none", "none"], [self.vbfind, "none", "person", "none"], [self.vbgo, "operator", "none", "none"], [self.vbspeak, "none", "none", "Alex"]],
             self.vbspeak + " me name of person at {location}"                                                                           : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", "person", "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", "person", "none"], [self.vbgo, "operator", "none", "none"], [self.vbspeak, "none", "none", "Alex"]],
             self.vbspeak + " me how many {object} there are on {location}"                                                              : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", "object", "none"], [self.vbgo, "operator", "none", "none"], [self.vbspeak, "none", "none", "one"]],
             self.vbtake + " {object} from {location} and " + self.vbplace + " {object} on {location}"                                   : [[self.vbgo, self.location[0], "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[1], "none", "none"], [self.vbplace, "none", self.object[0], "none"]],
             self.vbtake + " {object} and " + self.vbplace + " {object} on {location}"                                                   : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbplace, "none", self.object[0], "none"]],
-            self.vbtake + " {object} from {location} and " + self.vbdeliver + " {object} to {name} at {location}"                       : [[self.vbgo, self.location[0], "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.GetRoomName(self.location[0]), "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
+            self.vbtake + " {object} from {location} and " + self.vbdeliver + " {object} to {name} at {location}"                       : [[self.vbgo, self.location[0], "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbtake + " {object} from {location} and " + self.vbdeliver + " {object} to me"                                         : [[self.vbgo, self.location[0], "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, "operator", "none", "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbplace + " {object} on {location}"                                                                                    : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbplace, "none", self.object[0], "none"]],
-            self.vbgo + " to {room}, " + self.vbfind + " {name}, and " + self.vbspeak + " {answer}"                                     : [[self.vbgo, self.room[0], "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
+            self.vbgo + " to {room}, " + self.vbfind + " {name}, and " + self.vbspeak + " {answer}"                                     : [[self.vbgo, self.room[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
             #self.vbgo + " to {room}, " + self.vbfind + " {name}, and answer a question"                                                 : ,
-            self.vbgo + " to {location}, " + self.vbfind + " {object}, and " + self.vbdeliver + " {object} to {name} at {location}"     : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", self.object[0], "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.GetRoomName(self.location[0]), "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
+            self.vbgo + " to {location}, " + self.vbfind + " {object}, and " + self.vbdeliver + " {object} to {name} at {location}"     : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", self.object[0], "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbgo + " to {location}, " + self.vbfind + " {object}, and " + self.vbdeliver + " {object} to me"                       : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", self.object[0], "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, "operator", "none", "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbgo + " to {location}, " + self.vbfind + " {object}, and " + self.vbplace + " {object} on {location}"                 : [[self.vbgo, self.location[0], "none", "none"], [self.vbfind, "none", self.object[0], "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[1], "none", "none"], [self.vbplace, "none", self.object[0], "none"]],
             self.vbfind + " {object} in {room}"                                                                                         : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbfind, "none", self.object[0], "none"]],
             self.vbfind + " {category} in {room}"                                                                                       : [[self.vbgo, self.GetLocationName(self.GetObjectName(self.category[0])), "none", "none"], [self.vbfind, "none", self.GetObjectName(self.category[0]), "none"]],
-            self.vbfind + " {name} in {room} and " + self.vbspeak + " {answer}"                                                         : [[self.vbgo, self.room[0], "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
+            self.vbfind + " {name} in {room} and " + self.vbspeak + " {answer}"                                                         : [[self.vbgo, self.room[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbspeak, "none", "none", self.answer[0]]],
             #self.vbfind + " {name} in {room} and answer a question"                                                                     : ,
             self.vbdeliver + " me {object} from {location}"                                                                             : [[self.vbgo, self.location[0], "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, "operator", "none", "none"], [self.vbdeliver, "none", self.object[0], "none"]],
-            self.vbdeliver + " {object} to {name} at {location}"                                                                        : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.GetRoomName(self.location[0]), "none", "none"], [self.vbfind, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
+            self.vbdeliver + " {object} to {name} at {location}"                                                                        : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, self.location[0], "none", "none"], [self.vbapproach, "none", self.name[0], "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbdeliver + " {object} to me"                                                                                          : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, "operator", "none", "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             self.vbdeliver + " me {object}"                                                                                             : [[self.vbgo, self.GetLocationName(self.object[0]), "none", "none"], [self.vbtake, "none", self.object[0], "none"], [self.vbgo, "operator", "none", "none"], [self.vbdeliver, "none", self.object[0], "none"]],
             #"answer a question to {name} at {location}"                                                                                 :,
